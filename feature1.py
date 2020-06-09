@@ -138,12 +138,21 @@ def process():
         for j in range(brokencount):
             path2=path1+'/s'+str(j)+'.csv'
             f0=open(path2,'r')
-            f1=open(path1+'/s'+str(j)+'.txt','w')
+            ##interval 采样窗口
+            ##count 采样数量
+            interval=0.2
+            #f1=open(path1+'/s'+str(j)+'.txt','w')
             r0=f0.readlines()
-            time_start=align_all['s'+str(i)]['s'+str(j)]
-            time_end=time_start+0.2
-            print(time_start)
-            print(time_end)
+            start=align_all['s'+str(i)]['s'+str(j)]
+            count=4
+            time_start=[]
+            time_end=[]
+            file_list=[]
+            for k in range(count):
+                time_start.append(start-(2-k)*interval)
+                time_end.append(start-(1-k)*interval)
+                f=open(path1+'/s'+str(j)+'-'+str(k)+'.txt','w')
+                file_list.append(f)
             for l0 in r0:
                 keys=l0.split(' ')
                 keys=list(filter(None,keys))
@@ -151,10 +160,13 @@ def process():
                 for temp in keys[7:]:
                     header+=temp.strip()+' '
                 time_now=float(keys[1])
-                if(time_now<=time_end and time_now>=time_start):
-                    f1.write(keys[1]+'\t'+keys[2]+'\t'+keys[3]+'\t'+keys[4]+'\t'+keys[5]+'\t'+keys[6]+'\t'+header+'\n')
+                for k in range(count):
+                    if(time_now<=time_end[k] and time_now>=time_start[k]):
+                        file_list[k].write(keys[1]+'\t'+keys[2]+'\t'+keys[3]+'\t'+keys[4]+'\t'+keys[5]+'\t'+keys[6]+'\t'+header+'\n')
+            for k in range(count):
+                file_list[k].close()
             f0.close()
-            f1.close()
+            
 
 
 
