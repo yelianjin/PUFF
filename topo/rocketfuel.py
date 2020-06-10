@@ -15,8 +15,8 @@ for line in f:
     print(line)
     keys=line.split(' ')
     keys[2]=keys[2].strip()
-    s1=keys[0][-4:]
-    s2=keys[1][-4:]
+    s1='b'+keys[0][-4:]
+    s2='b'+keys[1][-4:]
     l=s1+'+'+s2
     if s1 not in node:
         node[s1]=len(node)
