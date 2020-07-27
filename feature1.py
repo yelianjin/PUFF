@@ -2,6 +2,7 @@
 import sys
 import csv
 import os
+import random
 def file_name(file_dir):
     ###L的作用是遍历file_dir/brokennode1-40中/所有的csv文件
     L=[]
@@ -135,22 +136,30 @@ def process():
         path1=path+'brokennode'+str(i)
         if i in error_all:
             continue
+        ###interval 每次采样的时间窗口的大小，单位为s
+        ###head 取（0,1）内的随机数
+        ###tail=1-head
+        ###count 窗口数量
+        interval=0.1
+        head=random.random()
+        tail=1-head
+        count=4
         for j in range(brokencount):
             path2=path1+'/s'+str(j)+'.csv'
             f0=open(path2,'r')
             ##interval 采样窗口
             ##count 采样数量
-            interval=0.2
             #f1=open(path1+'/s'+str(j)+'.txt','w')
             r0=f0.readlines()
-            start=align_all['s'+str(i)]['s'+str(j)]
-            count=4
+            start=align_all['s'+str(i)]['s'+str(j)]-head*interval
+            end=start+interval
             time_start=[]
             time_end=[]
             file_list=[]
             for k in range(count):
-                time_start.append(start-(2-k)*interval)
-                time_end.append(start-(1-k)*interval)
+                ###这里的count/2是指[start,brokennode,end]事件，同时[T0],[T1],[start,brokennode,end],[T4]事件，以4个连续时间的变量为例，先讨论4个连续时间的变量的问题。
+                time_start.append(start-(count/2-k)*interval)
+                time_end.append(end-(count/2-k)*interval)
                 f=open(path1+'/s'+str(j)+'-'+str(k)+'.txt','w')
                 file_list.append(f)
             for l0 in r0:
@@ -177,10 +186,11 @@ if __name__ =='__main__':
     global error_all
     error_all=[]
     global brokencount
-    brokencount=40
+    brokencount=42
     initialize()
     global path
-    path='/home/ylj/GEANT/test_data/'
+    path=''
+    #path='/home/ylj/GEANT/test_data/'
     get_time()
     for i in align_all:
         print(align_all[i])

@@ -41,7 +41,7 @@ def greedy():
     ###while(nodes)情况为全部都在一跳邻居范围内的点
     ###finalnode是最终结果,set
     nodes=set()
-    for i in range(40):
+    for i in range(count_brokennode+1):
         nodes.add('s'+str(i))
     final_node=set()
     print(len(nodes))
@@ -71,7 +71,7 @@ def bfs():
     ###distance_all={}
     short_all={}
     appear_all={}
-    for i in range(40):
+    for i in range(count_brokennode+1):
         ###初始化
         start_node='s'+str(i)
         distance={}
@@ -79,12 +79,12 @@ def bfs():
         appear={}
         nodes=set()
         ###初始化nodes集,appear数
-        for j in range(40):
+        for j in range(count_brokennode+1):
             nodes.add('s'+str(j))
             appear['s'+str(j)]=0
 
         ###初始化short_list
-        for j in range(40):
+        for j in range(count_brokennode+1):
             temp_list=[]
             temp_list.append(start_node)
             short['s'+str(j)]=temp_list
@@ -141,7 +141,7 @@ def bfs():
         ###做appear计算
         ###appear[key]计算的是key在start_node确定时作为最短路径中一部分的次数
         for item in short:
-            for j in range(40):
+            for j in range(count_brokennode+1):
                 key='s'+str(j)
                 if(key in short_all[start_node][item]):
                     appear[key]+=1
@@ -154,12 +154,12 @@ def bfs():
     ###计算所有点作为最短路径中一点的次数
     ###exist_all[key],key作为最短路径中一点的次数
     exist_all={}
-    for i in range(40):
+    for i in range(count_brokennode+1):
         key='s'+str(i)
         exist_all[key]=0
-    for i in range(40):
+    for i in range(count_brokennode+1):
         key='s'+str(i)
-        for j in range(40):
+        for j in range(count_brokennode+1):
             start_node='s'+str(j)
             exist_all[key]+=appear_all[start_node][key]
     result=sorted(exist_all.items(),key=lambda x:x[1],reverse=True)
@@ -173,7 +173,7 @@ def factorization(final_node):
     ###distance_all['s0']第k项的[0]是第K个最近选中点
     ###distance_all['s0']第k项的[1]是s0与第K个最近选中点的跳数
     distance_choice={}
-    for i in range(40):
+    for i in range(count_brokennode+1):
         node='s'+str(i)
         temp={}
         for j in final_node:
@@ -182,17 +182,17 @@ def factorization(final_node):
         distance_choice[node]=result
     
     ##test_print
-    for i in range(40):
+    for i in range(count_brokennode+1):
         print(i)
         print(distance_choice['s'+str(i)])
 
     
     ###根据ip取特征的过程，获得所有Link
     link_switch=dic
-    for i in range(40):
+    for i in range(count_brokennode+1):
         link_switch['s'+str(i)].remove('s'+str(i))
     link_all={}
-    for i in range(40):
+    for i in range(count_brokennode+1):
         for j in link_switch['s'+str(i)]:
             key1='s'+str(i)+'+'+j
             key2=j+'+'+'s'+str(i)
@@ -233,18 +233,27 @@ def factorization(final_node):
                         #continue
                     info=fs[switch[0]][count1]
                     infos=info.split('\t')
-                    for k in range(2,6):
+                    for k in range(2,8):
                         link_all[item].append(infos[k].strip())
                 
-            
+                ###以下为邻居信息的获得
                 for switch in distance_choice[key1]:
                     #if switch[0]==key1:
                         #continue
+                    ##count_temp1:f1的计算
+                    ##count_temp2:f2的计算
+                    ##count_temp3:f3的计算
+                    ##count_temp4:f4的计算
+                    ##count_temp5:总共的一跳邻居数
+                    ##count_temp6:f5的计算
+                    ##count_temp7:f6的计算
                     count_temp1=0
                     count_temp2=0
                     count_temp3=0
                     count_temp4=0
                     count_temp5=0
+                    count_temp6=0
+                    count_temp7=0
                     for neighbors in dic[key1]:
                         if neighbors==key1:
                             continue
@@ -256,21 +265,27 @@ def factorization(final_node):
                         count_temp3+=float(infos[4].strip())
                         count_temp4+=float(infos[5].strip())
                         count_temp5+=1
+                        count_temp6+=float(infos[6].strip())
+                        count_temp7+=float(infos[7].strip())
                     result1=float(count_temp1/count_temp5)
                     result2=float(count_temp2/count_temp5)
                     result3=float(count_temp3/count_temp5)
                     result4=float(count_temp4/count_temp5)
+                    result5=float(count_temp6/count_temp5)
+                    result6=float(count_temp7/count_temp5)
                     link_all[item].append(str(result1))
                     link_all[item].append(str(result2))
                     link_all[item].append(str(result3))
                     link_all[item].append(str(result4))
+                    link_all[item].append(str(result5))
+                    link_all[item].append(str(result6))
             
                 for switch in distance_choice[key2]:
                     #if switch[0]==key2:
                         #continue
                     info=fs[switch[0]][count2]
                     infos=info.split('\t')
-                    for k in range(2,6):
+                    for k in range(2,8):
                         link_all[item].append(infos[k].strip())
                 
                 for switch in distance_choice[key2]:
@@ -281,6 +296,8 @@ def factorization(final_node):
                     count_temp3=0
                     count_temp4=0
                     count_temp5=0
+                    count_temp6=0
+                    count_temp7=0
                     for neighbors in dic[key2]:
                         if neighbors==key2:
                             continue
@@ -292,15 +309,20 @@ def factorization(final_node):
                         count_temp3+=float(infos[4].strip())
                         count_temp4+=float(infos[5].strip())
                         count_temp5+=1
+                        count_temp6+=float(infos[6].strip())
+                        count_temp7+=float(infos[7].strip())
                     result1=float(count_temp1/count_temp5)
                     result2=float(count_temp2/count_temp5)
                     result3=float(count_temp3/count_temp5)
                     result4=float(count_temp4/count_temp5)
+                    result5=float(count_temp6/count_temp5)
+                    result6=float(count_temp7/count_temp5)
                     link_all[item].append(str(result1))
                     link_all[item].append(str(result2))
                     link_all[item].append(str(result3))
                     link_all[item].append(str(result4))
-            
+                    link_all[item].append(str(result5))
+                    link_all[item].append(str(result6))
 
 
 
@@ -338,7 +360,7 @@ if __name__=='__main__':
 ##count_brokennode brokennode文件夹数量
 ##count_monitor检测节点数量
     global count_brokennode
-    count_brokennode=39
+    count_brokennode=41
     global count_monitor
     count_monitor=8
     global dic
