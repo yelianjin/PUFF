@@ -4,7 +4,9 @@ from collections import defaultdict
 brokennode_list=[]
 global brokencount
 brokencount=42
-for i in range(brokencount):
+global event
+event=28
+for i in range(event):
     path='brokennode'+str(i)
     brokennode_list.append(path)
 ##count采样数量需要与feature1.py中的参数对齐

@@ -20,7 +20,7 @@ def file_name(file_dir):
 #align_all={}
 def initialize():
     count=brokencount
-    for i in range(brokencount):
+    for i in range(event):
         temp={}
         for j in range(brokencount):
             temp[j]=0
@@ -37,7 +37,7 @@ def get_time():
     ##那么即可校正时刻
     ##在t2的一个精确小的范围内，比如全局最小值的那个点对齐
     #path='/home/ylj/chinaNet/chinaNet/'
-    for i in range(brokencount):
+    for i in range(event):
         brokenpoint='s'+str(i)
         broke_path=path+'brokennode'+str(i)
 
@@ -132,7 +132,7 @@ def get_time():
 
 
 def process():
-    for i in range(brokencount):
+    for i in range(event):
         path1=path+'brokennode'+str(i)
         if i in error_all:
             continue
@@ -187,6 +187,8 @@ if __name__ =='__main__':
     error_all=[]
     global brokencount
     brokencount=42
+    global event
+    event=28
     initialize()
     global path
     path=''
@@ -198,7 +200,7 @@ if __name__ =='__main__':
     print(align_all['s0'])
     print(align_all['s0']['s0'])
     print(error_all)
-    for i in range(brokencount):
+    for i in range(event):
         if i in error_all:
             continue
         print(align_all['s'+str(i)]['s'+str(i)])

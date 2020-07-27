@@ -200,7 +200,7 @@ def factorization(final_node):
                 a=[]
                 link_all[key1]=a
     ###读文件
-    for i in range(count_brokennode+1):
+    for i in range(event+1):
     ###开始读写
         path1='brokennode'+str(i)+'/'
     ###假定观测节点不会down掉
@@ -361,6 +361,8 @@ if __name__=='__main__':
 ##count_monitor检测节点数量
     global count_brokennode
     count_brokennode=41
+    global event
+    event=27
     global count_monitor
     count_monitor=8
     global dic
