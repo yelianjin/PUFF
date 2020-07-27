@@ -4,7 +4,7 @@ GEANT:
 chinaNet:  
 AS1221:  
 
-# PUFF-topo-variants  
+# PUFF-topo-countbrokennode   
 GEANT:39  
 chinaNet:41  
 AS1221:108  
