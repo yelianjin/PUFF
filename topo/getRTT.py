@@ -82,6 +82,7 @@ def get_realRTT(short_all, edge_cost):
 
     rtt_all = {}
     temp = []
+    rtt_sum = 0.0
 
     # 计算结点i到结点j之间（按最短路径传输数据时）的RTT，并存储于rtt_all中
     for i in range(len(short_all)):
@@ -94,7 +95,7 @@ def get_realRTT(short_all, edge_cost):
             for k in range(len(list_ptr) - 1):
                 temp_cost += edge_cost[list_ptr[k]][list_ptr[k + 1]]
             add2dimDict(rtt_all, 's' + str(i), 's' + str(j), 2 * temp_cost)
-            sum += 2 * temp_cost
+            rtt_sum += 2 * temp_cost
             temp.append(2 * temp_cost)
 
     # temp为一个存储了所有结点对RTT值的列表，通过temp的辅助便可容易地计算RTT集合的最大值、最小值、中位数以及算术平均数
@@ -103,6 +104,6 @@ def get_realRTT(short_all, edge_cost):
     rtt_min = temp[0]
     rtt_max = temp[l - 1]
     rtt_midMean = temp[l // 2]
-    rtt_arithMean = sum / l
+    rtt_arithMean = rtt_sum / l
 
     return rtt_all, rtt_max, rtt_min, rtt_midMean, rtt_arithMean
