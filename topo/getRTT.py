@@ -8,13 +8,14 @@ def add2dimDict(theDict, key_a, key_b, val):
         theDict.update({key_a: {key_b: val}})
 
 
-def get_topo():
+def get_topo(filename):
     # 功能：通过读取设置网络拓扑的.py文件，来获取拓扑中的交换机信息以及链路信息
-    # 要求：目标文件中必须先连续逐行地出现添加交换机的语句，在若干行语句之后再连续逐行地出现添加链路（且显式注明时延参数'delay=tms'）的语句
+    # 要求：filename：目标文件的路径名
+    #      目标文件中必须先连续逐行地出现添加交换机的语句，在若干行语句之后再连续逐行地出现添加链路（且显式注明时延参数'delay=tms'）的语句
     # 输出：switch2num：存储所有{交换机名称:交换机编号}的索引对（例如{'Lhasa':'s0'}），即保存网络中的交换机结点信息
     #      edge_cost：存储所有{交换机s1:{交换机s2:链路<s1,s2>时延}}的索引对，即保存网络中的链路信息
 
-    f = open('hello.py')  # 读取设置网络拓扑的.py文件
+    f = open(filename)  # 读取设置网络拓扑的.py文件
     r = f.readlines()
 
     line_now = 0  # line_now表示当前所在行数
@@ -65,8 +66,10 @@ def get_topo():
         line_now += 1
     # print(edge_cost)
 
+    return switch2num, edge_cost
 
-def get_realRTT():
+
+def get_realRTT(short_all, edge_cost):
     # 功能：计算各交换机结点之间（按最短路径传输数据时）的实际RTT，并同时计算该RTT集合的最大值、最小值、中位数及算术平均数
     # 要求：交换机名称与交换机编号的对应关系
     #      short_all：各交换机结点之间（按跳数计）的最短路径，其中保存的索引对为{起点s1:{终点s2:路径[s1,...,s2]}}
@@ -84,15 +87,15 @@ def get_realRTT():
     for i in range(len(short_all)):
         for j in range(len(short_all)):
             if i == j:
-                add2dimDict(rtt_all, 's'+str(i), 's'+str(j), 0.0)
+                add2dimDict(rtt_all, 's' + str(i), 's' + str(j), 0.0)
                 continue
             temp_cost = 0.0
-            list_ptr = short_all['s'+str(i)]['s'+str(j)]
+            list_ptr = short_all['s' + str(i)]['s' + str(j)]
             for k in range(len(list_ptr) - 1):
                 temp_cost += edge_cost[list_ptr[k]][list_ptr[k + 1]]
-            add2dimDict(rtt_all, 's'+str(i), 's'+str(j), 2*temp_cost)
-            sum += 2*temp_cost
-            temp.append(2*temp_cost)
+            add2dimDict(rtt_all, 's' + str(i), 's' + str(j), 2 * temp_cost)
+            sum += 2 * temp_cost
+            temp.append(2 * temp_cost)
 
     # temp为一个存储了所有结点对RTT值的列表，通过temp的辅助便可容易地计算RTT集合的最大值、最小值、中位数以及算术平均数
     temp.sort()
@@ -101,3 +104,5 @@ def get_realRTT():
     rtt_max = temp[l - 1]
     rtt_midMean = temp[l // 2]
     rtt_arithMean = sum / l
+
+    return rtt_all, rtt_max, rtt_min, rtt_midMean, rtt_arithMean
