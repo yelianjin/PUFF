@@ -1,0 +1,23 @@
+
+'tar zxvf weights-dist.tar.gz' yields this README.WEIGHTS-DIST file
+and 6 subdirectories corresponding to the six ISPs studied in the
+paper. Each subdirectory contains two files -- weights.intra and
+latencies.intra. Each file contains the backbone topology represented
+as a list of edges separated by newlines. The third field in each line
+is the corresponding metric -- inferred weight or latency -- of the
+edge. The latency estimated is computed by rounding up the geographic
+distance to the nearest millisecond.
+
+
+##data source:  
+https://research.cs.washington.edu/networking/rocketfuel/  
+
+#rokcetfuel-generator  
+generator/rocketfuel.py  
+生成的是未缩进的mininet-topo 
+如果要使用生成的topo，需要缩进，参照其他格式  
+rocketfuel.py  
+读取latencies.intra  
+生成相应的拓扑.py  
+
+#example : generator/1221.py
