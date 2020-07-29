@@ -17,3 +17,7 @@ https://github.com/sjas/assessing-mininet
 其实不需要neighbors.txt，本身生成的*.py中就有邻居关系  
 通过assessing-mininet/parser，参考文件中的README.md进行操作，再通过get_RTT.py进行双向RTT的计算。  
 汇报几个中位数/算术平均数明显异于chinaNet/GEANT/AS1221的拓扑  
+
+
+另外一个拓扑数据集  
+https://research.cs.washington.edu/networking/rocketfuel/
