@@ -8,7 +8,7 @@ AS1221:  最大值:108ms  最小值:2ms  中位数:28ms  算术平均数:31.859�
 
 注：RTT是采用两倍端到端时延的方式来计算的。另外由于计算最短路径使用的是基于跳数的BFS，得到的最短路径有一定随机性，所以得到的RTT统计量会有小范围的变化  
 
-#assessing-mininet  
+# assessing-mininet  
 assessing-minient git地址（之后要合并）  
 https://github.com/sjas/assessing-mininet  
 拓扑地址 http://www.topology-zoo.org/dataset.html
@@ -21,3 +21,6 @@ https://github.com/sjas/assessing-mininet
 
 另外一个拓扑数据集  
 https://research.cs.washington.edu/networking/rocketfuel/
+
+# 备注  
+AS1221坏点 [13，14，89，90]
