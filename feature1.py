@@ -2,7 +2,6 @@
 import sys
 import csv
 import os
-import random
 def file_name(file_dir):
     ###L的作用是遍历file_dir/brokennode1-40中/所有的csv文件
     L=[]
@@ -20,7 +19,7 @@ def file_name(file_dir):
 #align_all={}
 def initialize():
     count=brokencount
-    for i in range(event):
+    for i in range(brokencount):
         temp={}
         for j in range(brokencount):
             temp[j]=0
@@ -37,7 +36,7 @@ def get_time():
     ##那么即可校正时刻
     ##在t2的一个精确小的范围内，比如全局最小值的那个点对齐
     #path='/home/ylj/chinaNet/chinaNet/'
-    for i in range(event):
+    for i in range(brokencount):
         brokenpoint='s'+str(i)
         broke_path=path+'brokennode'+str(i)
 
@@ -132,34 +131,26 @@ def get_time():
 
 
 def process():
-    for i in range(event):
+    for i in range(brokencount):
         path1=path+'brokennode'+str(i)
         if i in error_all:
             continue
-        ###interval 每次采样的时间窗口的大小，单位为s
-        ###head 取（0,1）内的随机数
-        ###tail=1-head
-        ###count 窗口数量
-        interval=0.1
-        head=random.random()
-        tail=1-head
-        count=4
         for j in range(brokencount):
             path2=path1+'/s'+str(j)+'.csv'
             f0=open(path2,'r')
             ##interval 采样窗口
             ##count 采样数量
+            interval=0.2
             #f1=open(path1+'/s'+str(j)+'.txt','w')
             r0=f0.readlines()
-            start=align_all['s'+str(i)]['s'+str(j)]-head*interval
-            end=start+interval
+            start=align_all['s'+str(i)]['s'+str(j)]
+            count=4
             time_start=[]
             time_end=[]
             file_list=[]
             for k in range(count):
-                ###这里的count/2是指[start,brokennode,end]事件，同时[T0],[T1],[start,brokennode,end],[T4]事件，以4个连续时间的变量为例，先讨论4个连续时间的变量的问题。
-                time_start.append(start-(count/2-k)*interval)
-                time_end.append(end-(count/2-k)*interval)
+                time_start.append(start-(2-k)*interval)
+                time_end.append(start-(1-k)*interval)
                 f=open(path1+'/s'+str(j)+'-'+str(k)+'.txt','w')
                 file_list.append(f)
             for l0 in r0:
@@ -187,8 +178,6 @@ if __name__ =='__main__':
     error_all=[]
     global brokencount
     brokencount=42
-    global event
-    event=28
     initialize()
     global path
     path=''
@@ -200,7 +189,7 @@ if __name__ =='__main__':
     print(align_all['s0'])
     print(align_all['s0']['s0'])
     print(error_all)
-    for i in range(event):
+    for i in range(brokencount):
         if i in error_all:
             continue
         print(align_all['s'+str(i)]['s'+str(i)])
