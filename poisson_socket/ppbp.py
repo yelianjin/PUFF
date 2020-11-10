@@ -9,27 +9,29 @@ class PPBP():
         ##unit:bit
         self.m_cbrRate=100*1024*1024
         self.m_pktSize=1470
-        self.m_burstArrivals=float(50)
-        self.m_burstlength=float(0.5)
+        self.m_burstArrivals=float(500)
+        self.m_burstlength=float(0.005)
         self.m_h=float(0.7)
         self.m_totalBytes=0
         self.m_activebursts=0
         self.m_offPeriod=True
         self.lastStartTime=time.time()
         self.initialTime=self.lastStartTime
-        self.flowSize=1024*8
+        self.flowSize=1024*15
         self.s=sched.scheduler(time.time,time.sleep)
         self.count_all=int(self.flowSize/1448)
-        self.exp_set=np.random.exponential(float(1/self.m_burstArrivals),1024)
+        self.exp_set=np.random.exponential(float(1/self.m_burstArrivals),10000)
         self.count=0
         self.m_shape=3-2*self.m_h
-        self.t_pareto_set=np.random.pareto(self.m_shape,1024)*self.m_burstlength
+        self.t_pareto_set=np.random.pareto(self.m_shape,10000)*self.m_burstlength
         ##No mtxTrace()
         
     def process(self):
         if (self.m_totalBytes>=self.flowSize):
+            print('HEY1')
             sys.exit(0)
         t_poisson_arrival=self.exp_set[self.count]
+        #t_poisson_arrival=(np.random.exponential(float(1/self.m_burstArrivals),1))[0]
 		#m_PoissonArrival =s.enter(t_poisson_arrival,1,self.PoissonArrival);
 
         self.s.enter(self.lastStartTime-self.initialTime+t_poisson_arrival,1,self.PoissonArrival)
@@ -37,12 +39,15 @@ class PPBP():
 
         ###a:scale
         ###shape: shape
-        #t_pareto=np.random.pareto(m_shape,1)*self.m_burstlength
+        #t_pareto=(np.random.pareto(self.m_shape,1)*self.m_burstlength)[0]
         t_pareto=self.t_pareto_set[self.count]
         self.s.enter(self.lastStartTime-self.initialTime+t_poisson_arrival+t_pareto,1,self.ParetoDeParture)
         self.s.enter(self.lastStartTime-self.initialTime+t_poisson_arrival,1,self.process)
         self.count+=1
+        if(self.count>=10000):
+            self.count=0
         if (self.m_totalBytes>=self.flowSize):
+            print('HEY2')
             sys.exit(0)
 
 
@@ -73,6 +78,7 @@ class PPBP():
         elif(self.m_activebursts==0):
             self.m_offPeriod = True
         elif(self.m_totalBytes>self.flowSize):
+            print('HEY3')
             sys.exit(0)
 
     
@@ -99,16 +105,19 @@ if __name__=="__main__":
     print(time.time())
     """
     b.process()
-    print(b.t_pareto_set)
-    print(b.exp_set)
+    #print(b.t_pareto_set)
+    #print(b.exp_set)
     print('initial')
-    print(time.time()-start)
+    start1=time.time()
+    print(start1-start)
     c=b.s
     try:
         c.run()
     except:
         print('OK')
-    print('A')
-    print(time.time()-start)
+        print('A')
+    print(time.time()-start1)
+    print(b.flowSize)
+    print(b.m_totalBytes)
     #print('end')
     #print(time.time()-start)
