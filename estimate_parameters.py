@@ -4,7 +4,7 @@ import math
 def get_src_dst_info(path):
     # 功能：从当前path下的throughput.txt中获取TCP流的信息
     # 输入：path：报文所在的路径，一般为./brokennodei
-    # 输出：src_dst_info：字典，src_dst_info[src][dst]=[size]，代表存在从h_src到h_dst1,h_dst2,...的TCP流，其数据量为size
+    # 输出：src_dst_info：字典，src_dst_info[src][dst]=[size]，代表存在从h_src到h_dst的TCP流，其数据量为size
     src_dst_info = {}
     f_throughput = open(path + 'throughput.txt', 'r')
     lines = f_throughput.readlines()
