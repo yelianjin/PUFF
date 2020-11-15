@@ -106,7 +106,7 @@ def get_parameters(path, min_burst_length):
             # 假定间隔服从指数分布exp(lambda)时，lambda的最大似然估计量为n/sum{xi}
             exp_lambda_on = n / sum_on
             exp_lambda_off = n / sum_off
-            # 假定间隔服从Pareto分布Pareto(1,gamma)时，gamma的Bayes估计量为n/sum{ln(xi)}
+            # 假定间隔服从Pareto分布Pareto(1,gamma)时，gamma的Bayes估计量为sqrt[n(n+1)]/sum{ln(1+xi)}
             pareto_gamma_on = math.sqrt(n * n + n) / sum_log_on
             pareto_gamma_off = math.sqrt(n * n + n) / sum_log_off
             # 假定突发序列到达间隔服从指数分布exp(lambda)时，lambda的最大似然估计量为n/sum{xi}
