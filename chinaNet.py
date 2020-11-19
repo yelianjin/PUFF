@@ -238,13 +238,13 @@ class GeneratedTopo(Topo):
 
 class PPBP():
     def __init__(self):
-        self.m_burstArrivals=float(5)
-        self.m_shape=3-2*0.7
+        self.m_burstArrivals=float(0.5)
+        self.m_shape=3-2*0.8
         self.m_burstlength=float(0.05)
-        self.e_l=(np.random.exponential(float(1/self.m_burstArrivals),256)).tolist()
+        self.e_l=(np.random.exponential(float(self.m_burstArrivals*self.m_burstlength),256)).tolist()
         self.p_l=(np.random.pareto(self.m_shape,256)*self.m_burstlength).tolist()
         self.exp_set=None
-        self.t_pareto_set=None
+        self.pareto_set=None
     
     def transformers(self,l):
         l2=[]
@@ -257,11 +257,11 @@ class PPBP():
         self.exp_set=self.transformers(self.e_l)
 
     def init_pareto(self):
-        self.t_pareto_set=self.transformers(self.p_l)
+        self.pareto_set=self.transformers(self.p_l)
     
 # worker 程序
 def worker(h1, h2, data_size,PP,port):
-    h1.cmd('python ppbp_client.py ' + h1.IP() + ' ' + h2.IP() + ' ' + str(data_size) +' '+PP.exp_set+' '+PP.t_pareto_set+' '+port+' &')
+    h1.cmd('python on_off_client.py ' + h1.IP() + ' ' + h2.IP() + ' ' + str(data_size) +' '+PP.pareto_set+' '+PP.exp_set+' '+port+' &')
     print('IP is')
     print(h2.IP())
 
@@ -356,23 +356,27 @@ def traffic(net, j):
 
             count += 1
     ##jobs shuffle
-    jobs = random.sample(jobs, len(jobs))
+    jobs = random.sample(jobs, len(jobs)/2)
     ##jobs start
     count = 0
-    stop = int(len(jobs) / 2)
+    stop = int(len(jobs))
 
     sleep(3)
 
     pingtest(net, count_node)
+
     for p in jobs:
         p.start()
+        print('EYNEY')
         ### close signal
         if (count == stop):
             # pingtest(net,count_node)
+            print('HI')
 
             singledown(net, 0, brokennode)
         count += 1
     sleep(1)
+
     ##wait for close signal
     for p in jobs:
         print("Try to close subprocess")
@@ -543,8 +547,11 @@ def myNet():
     PP=PPBP()
     PP.init_exp()
     PP.init_pareto()
-    #A='python ppbp_client.py 192.168.123.1 192.168.123.32 3121412 '+PP.exp_set+' '+PP.t_pareto_set+' &'
+    #print(PP.exp_set)
+    #print(PP.pareto_set)
+    #A='python on_off_client.py 192.168.123.1 192.168.123.32 3121412 '+PP.exp_set+' '+PP.pareto_set+' 123 &'
     #print(len(A))
+    #sys.exit(0)
     #print(A)
     ###PPBP is ok
     net = Mininet(topo=GeneratedTopo(), controller=lambda a: RemoteController(a, ip='127.0.0.1', port=6633),
