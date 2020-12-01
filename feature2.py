@@ -1,7 +1,7 @@
 # -*- coding:UTF-8 -*-
 import sys
 from collections import defaultdict
-
+import os
 def selfadd2dimDict(theDict, key_a, key_b):
     # 功能：将int型字典theDict中索引对{key_a:{key_b:val}}所对应的值自加1
     # 备注：因为解释器不能确定第一维的索引是否已经存在于字典theDict中，所以对二维字典直接赋值会报错（类似二维数组），需如下做才能成功添加索引对
@@ -17,9 +17,9 @@ def selfadd2dimDict(theDict, key_a, key_b):
 
 brokennode_list=[]
 global brokencount
-brokencount=42
+brokencount=104
 global event
-event=42
+event=104
 for i in range(event):
     path='brokennode'+str(i)
     brokennode_list.append(path)
@@ -27,6 +27,11 @@ for i in range(event):
 global wind_count
 wind_count=8
 for path in brokennode_list:
+    path_test=path+'/s0-0.txt'
+    if((os.path.exists(path_test))==False):
+        print(path_test)
+        print('A')
+        continue
     for i in range(brokencount):
         tcp_source = defaultdict(int)
         tcp_target = defaultdict(int)

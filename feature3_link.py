@@ -1,6 +1,6 @@
 # -*- coding:UTF-8 -*-
 import sys
-
+import os
 def initialize():
 ###从neighbors.txt中读取是路由器两端的链路
 ###dic['s0']保存s0周围的邻居
@@ -203,15 +203,24 @@ def factorization(final_node):
     for i in range(event+1):
     ###开始读写
         path1='brokennode'+str(i)+'/'
+        judge='s'+str(i)
+    ###来自断掉节点的信息都为0
     ###假定观测节点不会down掉
+        """
         judge='s'+str(i)
         if judge in final_node:
             fdata=open(path1+'data.txt','w')
             fdata.write('\n')
             fdata.close()
             continue
+        """
     ###开始读写
         ##count 采样窗口数量
+        ##异常处理
+        path_test=path1+'s0-0_1.txt'
+        if((os.path.exists(path_test))==False):
+            print(path_test)
+            continue
         window_count=8
         for k in range(window_count):
             fs={}
@@ -233,8 +242,12 @@ def factorization(final_node):
                         #continue
                     info=fs[switch[0]][count1]
                     infos=info.split('\t')
-                    for k in range(2,14):
-                        link_all[item].append(infos[k].strip())
+                    if switch[0] != judge:
+                        for k in range(2,14):
+                            link_all[item].append(infos[k].strip())
+                    else:
+                        for k in range(2,14):
+                            link_all[item].append(str(0))
                 
                 ###以下为邻居信息的获得
                 for switch in distance_choice[key1]:
@@ -247,6 +260,10 @@ def factorization(final_node):
                     ##count_temp5:总共的一跳邻居数
                     ##count_temp6:f5的计算
                     ##count_temp7:f6的计算
+                    if switch[0]==judge:
+                        for k in range(2,14):
+                            link_all[item].append(str(0))
+                        continue
                     count_temp1=0
                     count_temp2=0
                     count_temp3=0
@@ -266,6 +283,7 @@ def factorization(final_node):
                         count_switch=int(neighbors[1:])
                         info=fs[switch[0]][count_switch]
                         infos=info.split('\t')
+                    
                         count_temp1+=float(infos[2].strip())
                         count_temp2+=float(infos[3].strip())
                         count_temp3+=float(infos[4].strip())
@@ -309,12 +327,20 @@ def factorization(final_node):
                         #continue
                     info=fs[switch[0]][count2]
                     infos=info.split('\t')
-                    for k in range(2,14):
-                        link_all[item].append(infos[k].strip())
+                    if switch[0]!=judge:
+                        for k in range(2,14):
+                            link_all[item].append(infos[k].strip())
+                    else:
+                        for k in range(2,14):
+                            link_all[item].append(str(0))
                 
                 for switch in distance_choice[key2]:
                     #if switch[0]==key2:
                         #continue
+                    if(switch[0]==judge):
+                        for k in range(2,14):
+                            link_all[item].append(str(0))
+                        continue
                     count_temp1=0
                     count_temp2=0
                     count_temp3=0
@@ -386,7 +412,8 @@ def factorization(final_node):
             s1=key1[1:]
             s2=key2[1:]
             count1=int(s1)
-            count2=int(s2) 
+            count2=int(s2)
+    
             if count1==i or count2==i:
                 link_all[item].append(str(1))
             else:
@@ -412,9 +439,9 @@ if __name__=='__main__':
 ##count_brokennode brokennode文件夹数量
 ##count_monitor检测节点数量
     global count_brokennode
-    count_brokennode=41
+    count_brokennode=103
     global event
-    event=41
+    event=103
     global count_monitor
     count_monitor=int(sys.argv[1])
     global dic
@@ -428,5 +455,13 @@ if __name__=='__main__':
     for i in range(count_monitor):
         final_node.append(bfs_result[i][0])
     print(final_node)
-    print(len(final_node))
+    """
+    f=open('monitors.txt','w')
+    count=1
+    for i in final_node:
+        f.write(str(count)+'\t'+i+'\n')
+        count+=1
+    f.close()
+    sys.exit(0)
+    """
     factorization(final_node)
